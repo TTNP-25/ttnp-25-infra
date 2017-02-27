@@ -1,0 +1,9 @@
+[ttn]
+server = eu.thethings.network
+port = 1883
+app_id = ttn-app-id
+password = ttn-app-password-base64
+
+[elasticsearch]
+server = your.elasticsearch.server
+port = 9200
