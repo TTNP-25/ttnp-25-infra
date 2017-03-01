@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/venv/ttn-scripts/bin/python3
 
 import configparser
 import json
@@ -28,17 +28,17 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     try:
         ds = {}
-        pl = json.loads(msg.payload)
+        pl = json.loads(msg.payload.decode('utf-8'))
         for field in pl['payload_fields']:
             ds[field] = pl['payload_fields'][field]
         ds['port'] = pl['port']
         ds['app_id'] = pl['app_id']
         ds['dev_id'] = pl['dev_id']
         ds['message_created'] = pl['metadata']['time']
-        ds['topic'] = msg.topic
+        if msg.topic:
+            ds['topic'] = msg.topic
         ds['timestamp'] = datetime.utcnow()
         ds['ttn2es_relay'] = ttnes_hostname
-        print(ds)
         es.index(index="ttnp25", doc_type="string", body=ds)
     except:
         pass
@@ -61,10 +61,5 @@ client.username_pw_set(
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(mqttServer,mqttPort, 60)
-
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
 client.loop_forever()
 
