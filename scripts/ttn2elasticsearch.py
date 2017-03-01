@@ -8,7 +8,7 @@ from elasticsearch import Elasticsearch
 import paho.mqtt.client as mqtt
 
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read("/etc/mqtt2ttn.conf")
 
 mqttServer = config['ttn']['server']
 mqttPort = int(config['ttn']['port'])
